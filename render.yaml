@@ -4,14 +4,18 @@ services:
     name: securebox-redis
     plan: starter
     maxmemoryPolicy: allkeys-lru
+    ipAllowList:
+      - source: 0.0.0.0/0
+        description: Allow all (open access for testing)
 
   # Encryption Service
   - type: web
     name: securebox-encryption
     env: docker
+    region: oregon
+    plan: starter
     dockerfilePath: ./services/encryption-service/Dockerfile
     dockerContext: ./services/encryption-service
-    plan: starter
     healthCheckPath: /health
     envVars:
       - key: REDIS_HOST
@@ -28,9 +32,10 @@ services:
   - type: web
     name: securebox-storage
     env: docker
+    region: oregon
+    plan: starter
     dockerfilePath: ./services/storage-service/Dockerfile
     dockerContext: ./services/storage-service
-    plan: starter
     healthCheckPath: /health
     envVars:
       - key: POSTGRES_HOST
@@ -57,21 +62,22 @@ services:
   - type: web
     name: securebox-api-gateway
     env: docker
+    region: oregon
+    plan: starter
     dockerfilePath: ./services/api-gateway/Dockerfile
     dockerContext: ./services/api-gateway
-    plan: starter
     healthCheckPath: /health
     envVars:
       - key: ENCRYPTION_SERVICE_URL
         fromService:
           name: securebox-encryption
           type: web
-          property: hostport
+          property: host
       - key: STORAGE_SERVICE_URL
         fromService:
           name: securebox-storage
           type: web
-          property: hostport
+          property: host
       - key: REDIS_HOST
         fromService:
           name: securebox-redis
@@ -88,9 +94,10 @@ services:
   - type: worker
     name: securebox-worker
     env: docker
+    region: oregon
+    plan: starter
     dockerfilePath: ./services/background-worker/Dockerfile
     dockerContext: ./services/background-worker
-    plan: starter
     envVars:
       - key: REDIS_URL
         fromService:
@@ -104,6 +111,5 @@ services:
 
 databases:
   - name: securebox-db
-    plan: starter
     databaseName: securebox
     user: securebox_user
