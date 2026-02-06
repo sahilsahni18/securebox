@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureBox — Next-Gen Encrypted File Sharing</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --neon-blue: #00d4ff;
+            --neon-purple: #b537ff;
+            --neon-pink: #ff2e97;
+            --bg-dark: #0a0e27;
+            --bg-darker: #050814;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: #a0aec0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, sans-serif;
+            background: var(--bg-darker);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Gradient Background */
+        .bg-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: linear-gradient(45deg, #0a0e27, #1a1f3a, #0a0e27);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        /* Floating Orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            animation: float 20s infinite ease-in-out;
+            z-index: 1;
+        }
+
+        .orb1 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, var(--neon-blue), transparent);
+            top: -250px;
+            left: -250px;
+            animation-delay: 0s;
+        }
+
+        .orb2 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, var(--neon-purple), transparent);
+            bottom: -200px;
+            right: -200px;
+            animation-delay: 5s;
+        }
+
+        .orb3 {
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, var(--neon-pink), transparent);
+            top: 50%;
+            left: 50%;
+            animation-delay: 10s;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            33% {
+                transform: translate(100px, -100px) scale(1.1);
+            }
+
+            66% {
+                transform: translate(-100px, 100px) scale(0.9);
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 80px 32px;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 80px;
+            animation: fadeSlideDown 1s ease-out;
+        }
+
+        @keyframes fadeSlideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple), var(--neon-pink));
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            box-shadow: 0 20px 60px rgba(0, 212, 255, 0.4);
+            animation: pulse 3s ease-in-out infinite;
+            position: relative;
+        }
+
+        .logo::before {
+            content: '';
+            position: absolute;
+            inset: -5px;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple), var(--neon-pink));
+            border-radius: 26px;
+            filter: blur(20px);
+            opacity: 0.6;
+            z-index: -1;
+            animation: rotate 6s linear infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple), var(--neon-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.03em;
+            margin-bottom: 16px;
+            text-shadow: 0 0 80px rgba(0, 212, 255, 0.5);
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            font-weight: 300;
+            letter-spacing: 0.02em;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--glass-border);
+            border-radius: 32px;
+            padding: 48px;
+            margin-bottom: 40px;
+            position: relative;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: fadeSlideUp 1s ease-out backwards;
+            overflow: hidden;
+        }
+
+        .card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .card:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 32px;
+            padding: 1px;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple), var(--neon-pink));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateY(-8px) scale(1.01);
+            box-shadow:
+                0 30px 90px rgba(0, 212, 255, 0.2),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .card-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, var(--text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 28px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        input {
+            width: 100%;
+            padding: 18px 24px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        input:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--neon-blue);
+            box-shadow:
+                0 0 0 4px rgba(0, 212, 255, 0.1),
+                0 10px 30px rgba(0, 212, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .hint {
+            margin-top: 10px;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* Button */
+        button {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: inherit;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.3);
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        button:hover::before {
+            opacity: 1;
+        }
+
+        button:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0, 212, 255, 0.5);
+        }
+
+        button:active {
+            transform: translateY(-2px) scale(1);
+        }
+
+        button span {
+            position: relative;
+            z-index: 1;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Progress */
+        .progress {
+            margin-top: 28px;
+            display: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-pink));
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            from {
+                transform: translateX(-100%);
+            }
+
+            to {
+                transform: translateX(100%);
+            }
+        }
+
+        .progress-text {
+            text-align: center;
+            font-size: 0.925rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Results */
+        .result {
+            margin-top: 28px;
+            padding: 24px;
+            border-radius: 16px;
+            display: none;
+            animation: slideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #10b981;
+        }
+
+        .error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+
+        .share-box {
+            margin-top: 20px;
+            padding: 28px;
+            background: rgba(0, 212, 255, 0.05);
+            border: 2px dashed var(--neon-blue);
+            border-radius: 16px;
+        }
+
+        .share-label {
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: block;
+            color: var(--text-primary);
+            font-size: 1.05rem;
+        }
+
+        .link-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .link-input {
+            flex: 1;
+            padding: 16px 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--neon-blue);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .copy-btn {
+            padding: 16px 32px;
+            background: var(--neon-blue);
+            color: var(--bg-darker);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            width: auto;
+            box-shadow: 0 10px 25px rgba(0, 212, 255, 0.4);
+        }
+
+        .copy-btn:hover {
+            background: var(--neon-purple);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(181, 55, 255, 0.5);
+        }
+
+        .expiry-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 16px;
+            padding: 10px 18px;
+            background: linear-gradient(135deg, rgba(255, 46, 151, 0.15), rgba(181, 55, 255, 0.15));
+            border: 1px solid var(--neon-pink);
+            border-radius: 10px;
+            font-size: 0.875rem;
+            color: var(--neon-pink);
+            font-weight: 600;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 80px;
+            padding-top: 60px;
+            border-top: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        footer::before {
+            content: '•';
+            margin: 0 12px;
+        }
+
+        footer::after {
+            content: '•';
+            margin: 0 12px;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .container {
+                padding: 60px 24px;
+            }
+
+            .card {
+                padding: 32px;
+            }
+
+            .link-group {
+                flex-direction: column;
+            }
+
+            .copy-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Animated Background -->
+    <div class="bg-gradient"></div>
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+
+    <div class="container">
+        <header>
+            <div class="logo">🔐</div>
+            <h1>SecureBox</h1>
+            <p class="subtitle">Zero-knowledge encrypted file sharing</p>
+        </header>
+
+        <main>
+            <!-- Upload Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">↑</div>
+                    <h2>Upload File</h2>
+                </div>
+
+                <form id="uploadForm">
+                    <div class="form-group">
+                        <label>Select File</label>
+                        <input type="file" id="file" required>
+                        <p class="hint">Maximum file size: 100MB</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Encryption Password</label>
+                        <input type="password" id="password" placeholder="Enter a strong password" required>
+                        <p class="hint">Recipients need this to decrypt</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Expiry Time (hours)</label>
+                        <input type="number" id="expiry" value="24" min="1" max="168" required>
+                        <p class="hint">Auto-delete after (max 168 hours)</p>
+                    </div>
+
+                    <button type="submit" id="uploadBtn"><span>Upload & Encrypt</span></button>
+                </form>
+
+                <div class="progress" id="uploadProgress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="uploadProgressFill"></div>
+                    </div>
+                    <p class="progress-text" id="uploadProgressText">Encrypting and uploading...</p>
+                </div>
+
+                <div class="result" id="uploadResult"></div>
+            </div>
+
+            <!-- Download Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">↓</div>
+                    <h2>Download File</h2>
+                </div>
+
+                <form id="downloadForm">
+                    <div class="form-group">
+                        <label>File ID</label>
+                        <input type="text" id="fileId" placeholder="Paste the file ID here" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Decryption Password</label>
+                        <input type="password" id="downloadPassword" placeholder="Enter the password" required>
+                    </div>
+
+                    <button type="submit" id="downloadBtn"><span>Download & Decrypt</span></button>
+                </form>
+
+                <div class="progress" id="downloadProgress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="downloadProgressFill"></div>
+                    </div>
+                    <p class="progress-text" id="downloadProgressText">Downloading and decrypting...</p>
+                </div>
+
+                <div class="result" id="downloadResult"></div>
+            </div>
+        </main>
+
+        <footer>
+            End-to-end encryption • Zero-knowledge architecture • Microservices powered
+        </footer>
+    </div>
+
+    <script>
+        const API_BASE_URL = window.location.origin;
+
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const fileInput = document.getElementById('file');
+            const password = document.getElementById('password').value;
+            const expiry = document.getElementById('expiry').value;
+
+            if (!fileInput.files.length) {
+                showResult('uploadResult', 'Please select a file', 'error');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            if (file.size > 100 * 1024 * 1024) {
+                showResult('uploadResult', 'File exceeds 100MB limit', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('password', password);
+            formData.append('expiry_hours', expiry);
+
+            const uploadBtn = document.getElementById('uploadBtn');
+            const progress = document.getElementById('uploadProgress');
+            const progressFill = document.getElementById('uploadProgressFill');
+            const progressText = document.getElementById('uploadProgressText');
+
+            uploadBtn.disabled = true;
+            progress.style.display = 'block';
+            hideResult('uploadResult');
+
+            try {
+                const xhr = new XMLHttpRequest();
+
+                xhr.upload.addEventListener('progress', (e) => {
+                    if (e.lengthComputable) {
+                        const percent = (e.loaded / e.total) * 100;
+                        progressFill.style.width = percent + '%';
+                        progressText.textContent = `Uploading... ${Math.round(percent)}%`;
+                    }
+                });
+
+                xhr.addEventListener('load', () => {
+                    if (xhr.status === 200) {
+                        const response = JSON.parse(xhr.responseText);
+                        const fileUrl = `${window.location.origin}/#${response.file_id}`;
+
+                        showResult('uploadResult',
+                            `<div class="share-box">
+                                <span class="share-label">✓ Successfully encrypted and uploaded</span>
+                                <div class="link-group">
+                                    <input type="text" class="link-input" value="${fileUrl}" id="shareLink" readonly>
+                                    <button class="copy-btn" onclick="copyLink()">Copy</button>
+                                </div>
+                                <span class="expiry-badge">⏱ Expires in ${expiry} hours</span>
+                            </div>`,
+                            'success'
+                        );
+
+                        document.getElementById('uploadForm').reset();
+                    } else {
+                        const error = JSON.parse(xhr.responseText);
+                        showResult('uploadResult', `Upload failed: ${error.error || 'Unknown error'}`, 'error');
+                    }
+
+                    uploadBtn.disabled = false;
+                    progress.style.display = 'none';
+                    progressFill.style.width = '0%';
+                });
+
+                xhr.addEventListener('error', () => {
+                    showResult('uploadResult', 'Network error during upload', 'error');
+                    uploadBtn.disabled = false;
+                    progress.style.display = 'none';
+                });
+
+                xhr.open('POST', `${API_BASE_URL}/api/upload`);
+                xhr.send(formData);
+
+            } catch (error) {
+                showResult('uploadResult', `Error: ${error.message}`, 'error');
+                uploadBtn.disabled = false;
+                progress.style.display = 'none';
+            }
+        });
+
+        document.getElementById('downloadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const fileId = document.getElementById('fileId').value.trim();
+            const password = document.getElementById('downloadPassword').value;
+
+            const downloadBtn = document.getElementById('downloadBtn');
+            const progress = document.getElementById('downloadProgress');
+            const progressFill = document.getElementById('downloadProgressFill');
+            const progressText = document.getElementById('downloadProgressText');
+
+            downloadBtn.disabled = true;
+            progress.style.display = 'block';
+            hideResult('downloadResult');
+
+            try {
+                progressFill.style.width = '50%';
+
+                const response = await fetch(`${API_BASE_URL}/api/download/${fileId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: password })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Download failed');
+                }
+
+                const contentDisposition = response.headers.get('Content-Disposition');
+                let filename = 'downloaded_file';
+                if (contentDisposition) {
+                    const match = contentDisposition.match(/filename="(.+)"/);
+                    if (match) filename = match[1];
+                }
+
+                const blob = await response.blob();
+
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+
+                progressFill.style.width = '100%';
+                progressText.textContent = 'Complete!';
+
+                showResult('downloadResult', `✓ Successfully downloaded and decrypted "${filename}"`, 'success');
+                document.getElementById('downloadForm').reset();
+
+            } catch (error) {
+                showResult('downloadResult', `Error: ${error.message}`, 'error');
+            } finally {
+                downloadBtn.disabled = false;
+                setTimeout(() => {
+                    progress.style.display = 'none';
+                    progressFill.style.width = '0%';
+                }, 2000);
+            }
+        });
+
+        function showResult(id, message, type) {
+            const elem = document.getElementById(id);
+            elem.innerHTML = message;
+            elem.className = `result ${type}`;
+            elem.style.display = 'block';
+        }
+
+        function hideResult(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        function copyLink() {
+            const input = document.getElementById('shareLink');
+            input.select();
+            document.execCommand('copy');
+
+            const btn = event.target;
+            btn.textContent = '✓ Copied';
+            setTimeout(() => btn.textContent = 'Copy', 2000);
+        }
+
+        if (window.location.hash) {
+            const fileId = window.location.hash.substring(1);
+            document.getElementById('fileId').value = fileId;
+        }
+    </script>
+</body>
+
+</html>
