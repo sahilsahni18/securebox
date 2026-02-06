@@ -1,0 +1,32 @@
+# Create .gitignore
+@"
+# Environment files with secrets
+.env
+.env.*
+*.env
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+# Virtual environments
+venv/
+env/
+# Docker volumes (don't commit large data)
+postgres_data/
+redis_data/
+minio_data/
+# SSL certificates (except development)
+*.pem
+*.key
+*.crt
+!nginx/ssl/.gitkeep
+# IDE files
+.vscode/
+.idea/
+# OS files
+.DS_Store
+Thumbs.db
+# Logs
+*.log
+logs/
+"@ | Out-File -FilePath .gitignore -Encoding UTF8
