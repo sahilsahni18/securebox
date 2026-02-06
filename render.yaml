@@ -12,7 +12,7 @@ services:
           name: securebox-db
           property: connectionString
 
-  # Redis (using Render's managed Redis)
+  # Redis Cache
   - type: redis
     name: securebox-redis
     plan: starter
@@ -79,12 +79,12 @@ services:
         fromService:
           name: securebox-encryption
           type: web
-          property: url
+          property: hostport
       - key: STORAGE_SERVICE_URL
         fromService:
           name: securebox-storage
           type: web
-          property: url
+          property: hostport
       - key: REDIS_HOST
         fromService:
           name: securebox-redis
